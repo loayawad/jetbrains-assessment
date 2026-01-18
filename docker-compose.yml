@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: scheduler-postgres
+    environment:
+      POSTGRES_DB: scheduler
+      POSTGRES_USER: scheduler
+      POSTGRES_PASSWORD: scheduler123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scheduler"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: scheduler-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  scheduler:
+    build: .
+    container_name: scheduler-service
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: scheduler
+      POSTGRES_USER: scheduler
+      POSTGRES_PASSWORD: scheduler123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SCHEDULER_TICK_INTERVAL: 1000
+      LOCK_TTL: 30000
+      MAX_RETRY_ATTEMPTS: 3
+      RETRY_BACKOFF_BASE: 1000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Optional: Add more scheduler instances to demonstrate horizontal scaling
+  scheduler-2:
+    build: .
+    container_name: scheduler-service-2
+    ports:
+      - "3001:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: scheduler
+      POSTGRES_USER: scheduler
+      POSTGRES_PASSWORD: scheduler123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SCHEDULER_TICK_INTERVAL: 1000
+      LOCK_TTL: 30000
+      MAX_RETRY_ATTEMPTS: 3
+      RETRY_BACKOFF_BASE: 1000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    profiles:
+      - scale
+
+  # Mock agent service for testing
+  mock-agent:
+    image: hashicorp/http-echo:latest
+    container_name: mock-agent
+    command: ["-text", '{"status": "success", "message": "Agent executed successfully"}']
+    ports:
+      - "5678:5678"
+    profiles:
+      - test
+
+volumes:
+  postgres_data:

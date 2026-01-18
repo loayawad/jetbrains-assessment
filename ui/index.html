@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributed Scheduler</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🕐 Distributed Scheduler</h1>
+            <p class="subtitle">Manage agent execution schedules</p>
+        </header>
+
+        <div class="actions">
+            <button id="createBtn" class="btn btn-primary">+ Create Schedule</button>
+            <button id="refreshBtn" class="btn btn-secondary">🔄 Refresh</button>
+        </div>
+
+        <div class="schedules-grid" id="schedulesGrid">
+            <div class="loading">Loading schedules...</div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create Schedule</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="scheduleForm">
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" required placeholder="My Agent Schedule">
+                </div>
+
+                <div class="form-group">
+                    <label for="cronExpression">Cron Expression *</label>
+                    <input type="text" id="cronExpression" required placeholder="*/5 * * * *">
+                    <small>Examples: */5 * * * * (every 5 min), 0 9 * * 1 (Mon 9am)</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="agentId">Agent ID *</label>
+                        <input type="text" id="agentId" required placeholder="agent-001">
+                    </div>
+                    <div class="form-group">
+                        <label for="httpMethod">HTTP Method *</label>
+                        <select id="httpMethod" required>
+                            <option value="POST">POST</option>
+                            <option value="GET">GET</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="agentUrl">Agent URL *</label>
+                    <input type="url" id="agentUrl" required placeholder="https://example.com/api/agent">
+                </div>
+
+                <div class="form-group">
+                    <label for="headers">HTTP Headers (JSON)</label>
+                    <textarea id="headers" rows="3" placeholder='{"Authorization": "Bearer token"}'></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="payload">Request Payload (JSON)</label>
+                    <textarea id="payload" rows="3" placeholder='{"key": "value"}'></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="maxAttempts">Max Retry Attempts</label>
+                        <input type="number" id="maxAttempts" min="0" max="10" value="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="backoffMultiplier">Backoff Multiplier</label>
+                        <input type="number" id="backoffMultiplier" min="1" max="10" step="0.5" value="2">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="enabled" checked>
+                        Enabled
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Executions Modal -->
+    <div id="executionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="executionsTitle">Execution History</h2>
+                <span class="close" id="closeExecutions">&times;</span>
+            </div>
+            <div id="executionsList" class="executions-list">
+                <div class="loading">Loading executions...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
