@@ -53,6 +53,26 @@ A production-ready, horizontally scalable scheduler service for triggering agent
    - Each instance independently checks schedules
    - Race conditions resolved at lock acquisition
 
+## 🧪 Testing
+
+### Run Unit Tests
+
+The project includes comprehensive unit tests for all core components:
+
+```bash
+# Run all tests
+yarn run test
+```
+
+**Test Coverage:**
+- ✅ **AgentExecutor** (8 tests): Execution logic, retry mechanism, exponential backoff, error handling
+- ✅ **DistributedScheduler** (12 tests): Distributed locking, schedule checking, lifecycle management
+- ✅ **ScheduleRepository** (14 tests): CRUD operations, query handling
+- ✅ **ExecutionRepository** (13 tests): Execution tracking, status updates
+- ✅ **Validation** (26 tests): Input validation, edge cases
+
+**Total: 73 unit tests covering core architecture functionality**
+
 ## 🚀 Quick Start
 
 ### Prerequisites

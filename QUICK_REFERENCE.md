@@ -121,8 +121,22 @@ docker-compose logs -f scheduler | grep "Triggering execution"
 docker stats scheduler-service
 ```
 
-## 🧪 Quick Test
+## 🧪 Testing
 
+### Unit Tests (74 tests)
+```bash
+yarn test                    # Run all tests
+yarn test:watch              # Watch mode
+yarn test:coverage           # Coverage report
+```
+
+**Test Coverage:**
+- AgentExecutor (8 tests)
+- DistributedScheduler (12 tests)
+- Repositories (27 tests)
+- Validation (26 tests)
+
+### Manual Integration Test
 ```bash
 # 1. Create test schedule (fires every 2 minutes)
 curl -X POST http://localhost:3000/api/schedules \

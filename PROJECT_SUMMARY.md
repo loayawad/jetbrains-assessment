@@ -28,13 +28,20 @@ A production-ready distributed scheduler service that triggers agent executions 
 jetbrains-assessment/
 ├── src/                          # TypeScript source code
 │   ├── api/                      # REST API routes
+│   │   ├── __tests__/           # API tests
 │   │   ├── schedules.ts         # Schedule CRUD endpoints
 │   │   └── health.ts            # Health check endpoint
 │   ├── services/                 # Business logic
+│   │   ├── __tests__/           # Service unit tests (20 tests)
+│   │   │   ├── AgentExecutor.test.ts
+│   │   │   └── DistributedScheduler.test.ts
 │   │   ├── DistributedScheduler.ts  # Core scheduler
 │   │   ├── AgentExecutor.ts         # Agent invocation & retry
 │   │   └── RedisClient.ts           # Redis lock manager
 │   ├── repositories/             # Data access layer
+│   │   ├── __tests__/           # Repository unit tests (27 tests)
+│   │   │   ├── ScheduleRepository.test.ts
+│   │   │   └── ExecutionRepository.test.ts
 │   │   ├── ScheduleRepository.ts
 │   │   └── ExecutionRepository.ts
 │   ├── db/                       # Database layer
@@ -44,6 +51,8 @@ jetbrains-assessment/
 │   ├── types/                    # TypeScript interfaces
 │   │   └── index.ts
 │   ├── utils/                    # Utilities
+│   │   ├── __tests__/           # Validation tests (27 tests)
+│   │   │   └── validation.test.ts
 │   │   └── validation.ts        # Request validation (Zod)
 │   ├── config/                   # Configuration
 │   │   └── index.ts
@@ -153,6 +162,7 @@ if (acquired) {
 | **Validation** | Zod | Type-safe runtime validation |
 | **Cron Parsing** | cron-parser | Battle-tested, standard format |
 | **HTTP Client** | Axios | Promise-based, interceptors |
+| **Testing** | Jest + ts-jest | Industry standard, TypeScript support |
 | **Container** | Docker | Consistent environments |
 | **Orchestration** | Docker Compose | Simple multi-container setup |
 
@@ -245,6 +255,19 @@ if (acquired) {
 
 ## 🧪 Testing
 
+### Automated Unit Tests
+- ✅ **73 unit tests** covering core architecture
+- ✅ **AgentExecutor** (8 tests): Execution, retries, backoff, error handling
+- ✅ **DistributedScheduler** (12 tests): Locking, scheduling, lifecycle
+- ✅ **ScheduleRepository** (14 tests): CRUD operations
+- ✅ **ExecutionRepository** (13 tests): Execution tracking, status updates
+- ✅ **Validation** (27 tests): Input validation, edge cases
+
+Run tests with:
+```bash
+yarn test              # Run all tests
+```
+
 ### Manual Testing Performed
 - ✅ CRUD operations (API & UI)
 - ✅ Schedule execution timing
@@ -255,9 +278,8 @@ if (acquired) {
 - ✅ Custom headers & payloads
 - ✅ Input validation
 
-### Automated Testing (Future)
-- 🧪 Unit tests (Jest)
-- 🧪 Integration tests
+### Future Testing
+- 🧪 Integration tests (API end-to-end)
 - 🧪 Load tests (k6)
 - 🧪 Chaos engineering
 
@@ -265,13 +287,13 @@ if (acquired) {
 
 | File | Purpose | Lines |
 |------|---------|-------|
-| **README.md** | Overview, API, configuration | ~400 |
+| **README.md** | Overview, API, configuration, testing | ~450 |
 | **ARCHITECTURE.md** | System design, decisions | ~600 |
 | **SETUP.md** | Installation, troubleshooting | ~300 |
-| **TESTING.md** | Test procedures, scenarios | ~400 |
+| **TESTING.md** | Test procedures, unit tests, scenarios | ~500 |
 | **QUICK_REFERENCE.md** | Cheat sheet | ~150 |
-| **PROJECT_SUMMARY.md** | This file | ~200 |
-| **Total** | | **~2,350 lines** |
+| **PROJECT_SUMMARY.md** | This file | ~250 |
+| **Total** | | **~2,600 lines** |
 
 ## 🎓 What This Demonstrates
 
@@ -286,6 +308,7 @@ if (acquired) {
    - Clean architecture
    - Separation of concerns
    - Error handling
+   - Comprehensive unit tests (73 tests)
 
 3. **Production Thinking**
    - Health checks

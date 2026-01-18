@@ -466,34 +466,85 @@ docker-compose start postgres
 - [ ] Health check returns correct status
 - [ ] Graceful shutdown
 
-## Automated Testing (Future)
+## Automated Testing
 
 ### Unit Tests (Jest)
 
-```typescript
-// Example test structure
-describe('DistributedScheduler', () => {
-  it('should acquire lock for new execution', async () => {
-    // Test lock acquisition
-  });
+The project includes comprehensive unit tests for all core components. Run them with:
 
-  it('should skip execution if lock already held', async () => {
-    // Test lock contention
-  });
-});
+```bash
+# Run all tests
+yarn test
 
-describe('AgentExecutor', () => {
-  it('should retry on 5xx error', async () => {
-    // Test retry logic
-  });
+# Run tests in watch mode
+yarn test:watch
 
-  it('should use exponential backoff', async () => {
-    // Test backoff calculation
-  });
-});
+# Run tests with coverage report
+yarn test:coverage
 ```
 
-### Integration Tests
+### Test Coverage
+
+#### AgentExecutor Tests (8 tests)
+- ✅ Successful execution on first attempt
+- ✅ Retry logic with exponential backoff
+- ✅ Failure after exhausting retry attempts
+- ✅ HTTP error response handling (5xx)
+- ✅ Network timeout handling
+- ✅ Exponential backoff calculation
+- ✅ Backoff delay capping at maxDelayMs
+
+**Location**: `src/services/__tests__/AgentExecutor.test.ts`
+
+#### DistributedScheduler Tests (12 tests)
+- ✅ Scheduler start/stop lifecycle
+- ✅ Distributed lock acquisition and execution triggering
+- ✅ Lock contention handling (skip if already held)
+- ✅ Lock release on execution creation failure
+- ✅ Schedule fire time detection
+- ✅ Disabled schedule skipping
+- ✅ Schedule cache refresh from database
+- ✅ Error handling in refresh and tick mechanisms
+
+**Location**: `src/services/__tests__/DistributedScheduler.test.ts`
+
+#### ScheduleRepository Tests (14 tests)
+- ✅ Find all schedules
+- ✅ Find schedule by ID
+- ✅ Find enabled schedules only
+- ✅ Create schedule with defaults and custom configurations
+- ✅ Update schedule fields (single and multiple)
+- ✅ Delete schedule
+- ✅ Handle non-existent schedules
+
+**Location**: `src/repositories/__tests__/ScheduleRepository.test.ts`
+
+#### ExecutionRepository Tests (13 tests)
+- ✅ Find executions by schedule ID with limit
+- ✅ Find execution by ID
+- ✅ Create execution with PENDING status
+- ✅ Update execution status with metadata
+- ✅ Status transitions (PENDING → RUNNING → SUCCESS/FAILED)
+- ✅ Handle retry attempts and completion data
+
+**Location**: `src/repositories/__tests__/ExecutionRepository.test.ts`
+
+#### Validation Tests (27 tests)
+- ✅ Schedule creation validation
+- ✅ Schedule update validation
+- ✅ Name, cron expression, URL, HTTP method validation
+- ✅ Retry policy constraint validation
+- ✅ Edge case handling (null, undefined, invalid types)
+
+**Location**: `src/utils/__tests__/validation.test.ts`
+
+### Test Configuration
+
+Tests are configured using Jest with TypeScript support (`ts-jest`). Configuration can be found in `jest.config.js`.
+
+### Integration Tests (Future)
+
+Integration tests for end-to-end API testing are planned for future implementation:
 
 ```typescript
 describe('Schedule API', () => {
