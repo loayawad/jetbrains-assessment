@@ -2,6 +2,10 @@
 
 A production-ready, horizontally scalable scheduler service for triggering agent executions based on configurable cron schedules. Built with TypeScript, PostgreSQL, and Redis.
 
+## Simplified Demo (for deep testing, continue with SETUP.md then TESTING.md)
+
+https://drive.google.com/file/d/19PJlQqW1xsQ-WKTNqXq8thGGAw-X4ho3/view?usp=drive_link
+
 ## 🏗️ Architecture Overview
 
 ### Core Components
